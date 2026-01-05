@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 
 interface EmojiReactProps {
   postId: string;
@@ -8,30 +8,40 @@ interface EmojiReactProps {
 }
 
 const availableReactions = [
-  { id: 'APPROVED', label: 'APPROVED' },
-  { id: 'NOTED', label: 'NOTED' },
-  { id: 'ARCHIVED', label: 'ARCHIVED' },
-  { id: 'CRITICAL', label: 'CRITICAL' },
-  { id: 'REVIEWED', label: 'REVIEWED' },
-  { id: 'QUERY', label: 'QUERY' },
+  { id: "👍", emoji: "👍", label: "Like" },
+  { id: "👏", emoji: "👏", label: "Applause" },
+  { id: "🤔", emoji: "🤔", label: "Interesting" },
+  { id: "👎", emoji: "👎", label: "Dislike" },
+  { id: "🫤", emoji: "🫤", label: "Meh" },
 ];
 
-export default function EmojiReact({ postId, initialReactions }: EmojiReactProps) {
-  const [reactions, setReactions] = useState<Record<string, number>>(initialReactions);
+export default function EmojiReact({
+  postId,
+  initialReactions,
+}: EmojiReactProps) {
+  const [reactions, setReactions] =
+    useState<Record<string, number>>(initialReactions);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [recentlyClicked, setRecentlyClicked] = useState<string | null>(null);
+  const [userReactions, setUserReactions] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Check which reactions the user has already made
+    const storedReactions = JSON.parse(
+      localStorage.getItem("reactions") || "{}"
+    );
+    setUserReactions(storedReactions[postId] || []);
+  }, [postId]);
 
   const handleReaction = async (reactionId: string) => {
-    if (isSubmitting) return;
+    if (isSubmitting || userReactions.includes(reactionId)) return;
 
     setIsSubmitting(true);
-    setRecentlyClicked(reactionId);
 
     try {
-      const response = await fetch('/api/reactions', {
-        method: 'POST',
+      const response = await fetch("/api/reactions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           postId,
@@ -40,45 +50,61 @@ export default function EmojiReact({ postId, initialReactions }: EmojiReactProps
       });
 
       if (response.ok) {
-        // Optimistically update the UI
+        // Update the UI
         setReactions((prev) => ({
           ...prev,
           [reactionId]: (prev[reactionId] || 0) + 1,
         }));
+
+        // Store in localStorage
+        const storedReactions = JSON.parse(
+          localStorage.getItem("reactions") || "{}"
+        );
+        if (!storedReactions[postId]) {
+          storedReactions[postId] = [];
+        }
+        storedReactions[postId].push(reactionId);
+        localStorage.setItem("reactions", JSON.stringify(storedReactions));
+        setUserReactions(storedReactions[postId]);
       }
     } catch (error) {
-      console.error('Error submitting reaction:', error);
+      console.error("Error submitting reaction:", error);
     } finally {
       setIsSubmitting(false);
-      setTimeout(() => setRecentlyClicked(null), 500);
     }
   };
 
   return (
     <div className="industrial-box industrial-box-silver">
-      <div className="industrial-header industrial-header-silver">Reactions</div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {availableReactions.map((reaction) => (
-          <button
-            key={reaction.id}
-            onClick={() => handleReaction(reaction.id)}
-            disabled={isSubmitting}
-            className={`relative inset-panel hover:bg-white/80 transition-all ${
-              recentlyClicked === reaction.id ? 'ring-2 ring-blue-500 shadow-lg' : ''
-            } ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase tracking-wider text-gray-700 font-bold">
-                {reaction.label}
-              </span>
-              {reactions[reaction.id] > 0 && (
-                <span className="data-display text-xs bg-blue-100 px-2 py-1 font-bold">
-                  {reactions[reaction.id]}
+      <div className="industrial-header industrial-header-silver">
+        Reactions
+      </div>
+      <div className="flex flex-wrap gap-3">
+        {availableReactions.map((reaction) => {
+          const hasReacted = userReactions.includes(reaction.id);
+          const count = reactions[reaction.id] || 0;
+
+          return (
+            <button
+              key={reaction.id}
+              onClick={() => handleReaction(reaction.id)}
+              disabled={isSubmitting || hasReacted}
+              className={`flex items-center gap-2 px-4 py-2 text-lg ${
+                hasReacted
+                  ? "metal-button text-white cursor-not-allowed"
+                  : "inset-panel hover:bg-white/80 cursor-pointer"
+              } ${isSubmitting ? "opacity-50" : ""}`}
+              title={reaction.label}
+            >
+              <span className="text-2xl leading-none">{reaction.emoji}</span>
+              {count > 0 && (
+                <span className="data-display text-xs bg-white/30 px-2 py-0.5 font-bold leading-none">
+                  {count}
                 </span>
               )}
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
       <p className="text-xs text-gray-600 mt-4 uppercase tracking-wider data-display font-bold">
         ANONYMOUS

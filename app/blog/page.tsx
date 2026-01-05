@@ -57,15 +57,9 @@ export default async function BlogPage() {
                   {format(new Date(post.created_at), 'yyyy.MM.dd')}
                 </span>
               </div>
-              {post.excerpt && (
-                <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                  {post.excerpt}
-                </p>
-              )}
-              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-gray-600 font-bold">
-                <div className="w-1 h-1 bg-blue-500"></div>
-                <span>ACCESS ENTRY</span>
-              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {post.excerpt || post.content.substring(0, 200) + '...'}
+              </p>
             </Link>
           ))}
         </div>

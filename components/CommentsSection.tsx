@@ -62,7 +62,8 @@ export default function CommentsSection({
         <div>
           <label
             htmlFor="comment-name"
-            className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider"
+            className="block text-xs font-bold mb-2 uppercase tracking-wider"
+            style={{ color: '#4d2d52' }}
           >
             Name
           </label>
@@ -80,7 +81,8 @@ export default function CommentsSection({
         <div>
           <label
             htmlFor="comment-message"
-            className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider"
+            className="block text-xs font-bold mb-2 uppercase tracking-wider"
+            style={{ color: '#4d2d52' }}
           >
             Message
           </label>
@@ -98,16 +100,16 @@ export default function CommentsSection({
         </div>
 
         {status === "success" && (
-          <div className="inset-panel border-l-4 border-blue-500">
-            <p className="text-xs text-blue-600 uppercase tracking-wider font-bold">
+          <div className="inset-panel border-l-4" style={{ borderColor: '#ff85c0' }}>
+            <p className="text-xs uppercase tracking-wider font-bold" style={{ color: '#ff4da6' }}>
               SUBMITTED • AWAITING APPROVAL
             </p>
           </div>
         )}
 
         {status === "error" && (
-          <div className="inset-panel border-l-4 border-red-500">
-            <p className="text-xs text-red-600 uppercase tracking-wider font-bold">
+          <div className="inset-panel border-l-4" style={{ borderColor: '#ff4da6' }}>
+            <p className="text-xs uppercase tracking-wider font-bold" style={{ color: '#ff4da6' }}>
               SUBMISSION FAILED • RETRY
             </p>
           </div>
@@ -135,10 +137,11 @@ export default function CommentsSection({
           comments.map((comment) => (
             <div
               key={comment.id}
-              className="inset-panel border-l-4 border-gray-400"
+              className="inset-panel border-l-4"
+              style={{ borderColor: '#ffc0e0' }}
             >
               <div className="flex items-baseline justify-between mb-2">
-                <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide">
+                <h4 className="font-bold text-sm uppercase tracking-wide" style={{ color: '#4d2d52' }}>
                   {comment.name}
                 </h4>
                 <time className="data-display text-xs font-bold">
@@ -147,16 +150,16 @@ export default function CommentsSection({
                   }).toUpperCase()}
                 </time>
               </div>
-              <p className="text-gray-600 text-sm whitespace-pre-wrap leading-relaxed">
+              <p className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: '#4d2d52' }}>
                 {comment.message}
               </p>
 
               {comment.reply_from_admin && (
-                <div className="mt-3 ml-4 inset-panel border-l-4 border-blue-500">
-                  <p className="text-xs font-bold text-blue-600 mb-2 uppercase tracking-wider">
+                <div className="mt-3 ml-4 inset-panel border-l-4" style={{ borderColor: '#ff85c0' }}>
+                  <p className="text-xs font-bold mb-2 uppercase tracking-wider" style={{ color: '#ff4da6' }}>
                     ADMIN RESPONSE:
                   </p>
-                  <p className="text-gray-600 text-sm whitespace-pre-wrap leading-relaxed">
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: '#4d2d52' }}>
                     {comment.reply_from_admin}
                   </p>
                 </div>

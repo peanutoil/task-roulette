@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface FeedPostProps {
@@ -14,16 +14,23 @@ interface FeedPostProps {
 }
 
 export default function FeedPost({ post, initialReactions }: FeedPostProps) {
-  const signalCount = initialReactions['SIGNAL'] || 0;
-  const [signals, setSignals] = useState(signalCount);
+  const heartCount = initialReactions['❤️'] || 0;
+  const [hearts, setHearts] = useState(heartCount);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasReacted, setHasReacted] = useState(false);
 
-  const handleSignal = async () => {
+  useEffect(() => {
+    // Check if user has already reacted to this post
+    const reactions = JSON.parse(localStorage.getItem('reactions') || '{}');
+    if (reactions[post.id]?.includes('❤️')) {
+      setHasReacted(true);
+    }
+  }, [post.id]);
+
+  const handleHeart = async () => {
     if (isSubmitting || hasReacted) return;
 
     setIsSubmitting(true);
-    setHasReacted(true);
 
     try {
       const response = await fetch('/api/reactions', {
@@ -33,16 +40,24 @@ export default function FeedPost({ post, initialReactions }: FeedPostProps) {
         },
         body: JSON.stringify({
           postId: post.id,
-          emoji: 'SIGNAL',
+          emoji: '❤️',
         }),
       });
 
       if (response.ok) {
-        setSignals((prev) => prev + 1);
+        setHasReacted(true);
+        setHearts((prev) => prev + 1);
+
+        // Store in localStorage
+        const reactions = JSON.parse(localStorage.getItem('reactions') || '{}');
+        if (!reactions[post.id]) {
+          reactions[post.id] = [];
+        }
+        reactions[post.id].push('❤️');
+        localStorage.setItem('reactions', JSON.stringify(reactions));
       }
     } catch (error) {
       console.error('Error submitting reaction:', error);
-      setHasReacted(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -66,19 +81,18 @@ export default function FeedPost({ post, initialReactions }: FeedPostProps) {
         </time>
 
         <button
-          onClick={handleSignal}
-          disabled={isSubmitting || hasReacted}
-          className={`flex items-center gap-2 px-3 py-1 text-xs uppercase tracking-wider transition-all font-bold ${
+          onClick={handleHeart}
+          disabled={isSubmitting}
+          className={`flex items-center gap-2 px-3 py-1 text-xs ${
             hasReacted
-              ? 'metal-button'
-              : 'inset-panel text-gray-700 hover:text-gray-900 hover:bg-white/80'
+              ? 'metal-button text-white'
+              : 'inset-panel text-gray-700 hover:text-red-500'
           } ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
         >
-          <div className={`w-1 h-1 ${hasReacted ? 'bg-white' : 'bg-blue-500'}`}></div>
-          <span>SIGNAL</span>
-          {signals > 0 && (
-            <span className="data-display bg-white/30 px-2 py-0.5">
-              {signals}
+          <span className="text-base leading-none">{hasReacted ? '❤️' : '🤍'}</span>
+          {hearts > 0 && (
+            <span className="data-display bg-white/30 px-2 py-0.5 font-bold leading-none">
+              {hearts}
             </span>
           )}
         </button>

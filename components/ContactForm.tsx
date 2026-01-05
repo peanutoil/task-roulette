@@ -43,7 +43,8 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="name"
-          className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider"
+          className="block text-xs font-bold mb-2 uppercase tracking-wider"
+          style={{ color: '#4d2d52' }}
         >
           Name
         </label>
@@ -61,7 +62,8 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider"
+          className="block text-xs font-bold mb-2 uppercase tracking-wider"
+          style={{ color: '#4d2d52' }}
         >
           Email
         </label>
@@ -79,7 +81,8 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="message"
-          className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider"
+          className="block text-xs font-bold mb-2 uppercase tracking-wider"
+          style={{ color: '#4d2d52' }}
         >
           Message
         </label>
@@ -97,16 +100,16 @@ export default function ContactForm() {
       </div>
 
       {status === "success" && (
-        <div className="inset-panel border-l-4 border-blue-500">
-          <p className="text-xs text-blue-600 uppercase tracking-wider font-bold">
+        <div className="inset-panel border-l-4" style={{ borderColor: '#ff85c0' }}>
+          <p className="text-xs uppercase tracking-wider font-bold" style={{ color: '#ff4da6' }}>
             MESSAGE SUCCESSFUL • RESPONSE PENDING
           </p>
         </div>
       )}
 
       {status === "error" && (
-        <div className="inset-panel border-l-4 border-red-500">
-          <p className="text-xs text-red-600 uppercase tracking-wider font-bold">
+        <div className="inset-panel border-l-4" style={{ borderColor: '#ff4da6' }}>
+          <p className="text-xs uppercase tracking-wider font-bold" style={{ color: '#ff4da6' }}>
             MESSAGE FAILED • PLEASE TRY AGAIN
           </p>
         </div>
