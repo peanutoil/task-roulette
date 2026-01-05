@@ -15,15 +15,16 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className="relative z-20 industrial-box" style={{
-      background: 'linear-gradient(180deg, #ffffff 0%, #fff5fa 100%)',
-      borderBottom: '3px dashed #ff85c0',
-      boxShadow: '0 4px 12px rgba(255, 105, 180, 0.3)',
+    <nav className="relative z-20" style={{
       marginBottom: '20px'
     }}>
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="max-w-5xl mx-auto px-6 py-3 industrial-box" style={{
+        background: 'linear-gradient(180deg, #ffffff 0%, #fff5fa 100%)',
+        borderBottom: '3px dashed #ff85c0',
+        boxShadow: '0 4px 12px rgba(255, 105, 180, 0.3)'
+      }}>
         {/* Site branding */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 metal-frame" style={{
               background: 'linear-gradient(135deg, #ff85c0 0%, #ff69b4 100%)',

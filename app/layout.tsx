@@ -30,15 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navigation />
-        <main className="min-h-screen relative z-10">{children}</main>
-        <footer
-          className="relative z-10 mt-12 industrial-box"
-          style={{
-            background: "linear-gradient(180deg, #fff5fa 0%, #ffffff 100%)",
-            borderTop: "3px dashed #ff85c0",
-            boxShadow: "0 -4px 12px rgba(255, 105, 180, 0.3)",
-          }}
-        ></footer>
+        <main className="min-h-screen relative z-10 pb-8">{children}</main>
       </body>
     </html>
   );
